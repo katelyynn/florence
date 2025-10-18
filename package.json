@@ -1,5 +1,5 @@
 {
-    "name": "florence",
+    "name": "@tealmiku/florence",
     "version": "2025.1018.0",
     "main": "dist/florence.js",
     "type": "module",
