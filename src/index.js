@@ -6,6 +6,9 @@
 
 import { log } from './log';
 
+export { florence, log };
+export default florence;
+
 let last_page_type = {
     state: undefined
 };
