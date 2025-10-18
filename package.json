@@ -6,7 +6,7 @@
     "scripts": {
         "build": "node index.js"
     },
-    "dependencies": {
+    "devDependencies": {
         "esbuild": "^0.25.11"
     }
 }
