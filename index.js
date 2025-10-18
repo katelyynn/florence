@@ -11,7 +11,7 @@ esbuild
         entryPoints: ['src/index.js'],
         bundle: true,
         outfile: 'dist/florence.js',
-        minify: true,
+        minify: false,
         platform: 'browser',
         format: 'esm'
     })

@@ -6,8 +6,7 @@
 
 import { log } from './log';
 
-export { florence, log };
-export default florence;
+export { log };
 
 let last_page_type = {
     state: undefined
@@ -16,7 +15,7 @@ let last_page_subpage = {
     state: undefined
 };
 
-export function florence({
+export default function florence({
     page,
     on_head_load,
     on_body_load,
