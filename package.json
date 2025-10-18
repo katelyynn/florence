@@ -1,0 +1,9 @@
+{
+    "name": "florence",
+    "version": "2025.1018.0",
+    "main": "dist/florence.js",
+    "type": "module",
+    "dependencies": {
+        "esbuild": "^0.25.11"
+    }
+}
