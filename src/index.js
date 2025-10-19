@@ -6,6 +6,8 @@
 
 import { log } from './log';
 
+export const version = '2025.1019';
+
 export { log };
 
 let last_page_type = {
@@ -36,7 +38,7 @@ export default function florence({
 
     let head_observer = new MutationObserver(() => {
         if (document.head) {
-            document.head.classList.add('florence-supports-loading');
+            document.documentElement.classList.add('florence-supports-loading');
             if (on_head_load) on_head_load();
 
             head_observer.disconnect();
@@ -143,7 +145,7 @@ export default function florence({
     }
 
     function assign_page() {
-        document.head.classList.add('florence-supports-loading');
+        document.documentElement.classList.add('florence-supports-loading');
         if (!page.structure.wrapper)
             page.structure.wrapper =
                 document.body.querySelector('.main-content');

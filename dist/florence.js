@@ -49,6 +49,7 @@ function log(text, system, type = "info", append = {}) {
 }
 
 // src/index.js
+var version = "2025.1019";
 var last_page_type = {
   state: void 0
 };
@@ -75,7 +76,7 @@ function florence({
   });
   let head_observer = new MutationObserver(() => {
     if (document.head) {
-      document.head.classList.add("florence-supports-loading");
+      document.documentElement.classList.add("florence-supports-loading");
       if (on_head_load) on_head_load();
       head_observer.disconnect();
     }
@@ -149,7 +150,7 @@ function florence({
     );
   }
   function assign_page() {
-    document.head.classList.add("florence-supports-loading");
+    document.documentElement.classList.add("florence-supports-loading");
     if (!page.structure.wrapper)
       page.structure.wrapper = document.body.querySelector(".main-content");
     let main_content = page.structure.wrapper.querySelector(
@@ -195,5 +196,6 @@ function florence({
 }
 export {
   florence as default,
-  log
+  log,
+  version
 };
