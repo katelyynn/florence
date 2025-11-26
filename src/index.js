@@ -6,7 +6,7 @@
 
 import { log } from './log';
 
-export const version = '2025.1019';
+export const version = '2025.1126.1';
 
 export { log };
 
@@ -24,7 +24,8 @@ export default function florence({
     on_mutation,
     on_page_change,
     on_subpage_change,
-    on_error
+    on_error,
+    on_dedicated_page
 }) {
     log('starting florence', 'load', 'info', {
         page,
@@ -33,7 +34,8 @@ export default function florence({
         on_mutation,
         on_page_change,
         on_subpage_change,
-        on_error
+        on_error,
+        on_dedicated_page
     });
 
     let head_observer = new MutationObserver(() => {
@@ -73,6 +75,12 @@ export default function florence({
         ) {
             // error 503 or other page
             document.body.classList.add('florence-loaded');
+
+            if (document.body.querySelector(':scope > .container')) {
+                on_dedicated_page('503');
+            } else if (document.body.classList.contains('namespace--user_now')) {
+                on_dedicated_page('now');
+            }
         }
     });
 
@@ -141,21 +149,15 @@ export default function florence({
         if (on_mutation) on_mutation();
 
         let performance_end = performance.now();
-        log(
-            `finished in ${(performance_end - performance_start) / 1000} seconds`,
-            'loop'
-        );
+        log(`finished in ${(performance_end - performance_start) / 1000} seconds`, 'loop');
     }
 
     function assign_page() {
         document.documentElement.classList.add('florence-supports-loading');
         if (!page.structure.wrapper)
-            page.structure.wrapper =
-                document.body.querySelector('.main-content');
+            page.structure.wrapper = document.body.querySelector('.main-content');
 
-        let main_content = page.structure.wrapper.querySelector(
-            ':scope > :last-child:not([data-florence])'
-        );
+        let main_content = page.structure.wrapper.querySelector(':scope > :last-child:not([data-florence])');
         if (main_content) {
             assign_page_type();
 
