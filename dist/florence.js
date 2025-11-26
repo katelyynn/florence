@@ -49,7 +49,7 @@ function log(text, system, type = "info", append = {}) {
 }
 
 // src/index.js
-var version = "2025.1019";
+var version = "2025.1126.2";
 var last_page_type = {
   state: void 0
 };
@@ -63,7 +63,8 @@ function florence({
   on_mutation,
   on_page_change,
   on_subpage_change,
-  on_error
+  on_error,
+  on_dedicated_page
 }) {
   log("starting florence", "load", "info", {
     page,
@@ -72,7 +73,8 @@ function florence({
     on_mutation,
     on_page_change,
     on_subpage_change,
-    on_error
+    on_error,
+    on_dedicated_page
   });
   let head_observer = new MutationObserver(() => {
     if (document.head) {
@@ -95,6 +97,11 @@ function florence({
       pre_observer.disconnect();
     } else if (document.body && (document.body.querySelector(":scope > .container") || document.body.classList.contains("namespace--user_now"))) {
       document.body.classList.add("florence-loaded");
+      if (document.body.querySelector(":scope > .container")) {
+        on_dedicated_page("503");
+      } else if (document.body.classList.contains("namespace--user_now")) {
+        on_dedicated_page("now");
+      }
     }
   });
   pre_observer.observe(document.documentElement, {
@@ -144,18 +151,13 @@ function florence({
     if (page.state.error) return;
     if (on_mutation) on_mutation();
     let performance_end = performance.now();
-    log(
-      `finished in ${(performance_end - performance_start) / 1e3} seconds`,
-      "loop"
-    );
+    log(`finished in ${(performance_end - performance_start) / 1e3} seconds`, "loop");
   }
   function assign_page() {
     document.documentElement.classList.add("florence-supports-loading");
     if (!page.structure.wrapper)
       page.structure.wrapper = document.body.querySelector(".main-content");
-    let main_content = page.structure.wrapper.querySelector(
-      ":scope > :last-child:not([data-florence])"
-    );
+    let main_content = page.structure.wrapper.querySelector(":scope > :last-child:not([data-florence])");
     if (main_content) {
       assign_page_type();
       if (on_page_change) on_page_change(main_content);

@@ -6,7 +6,7 @@
 
 import { log } from './log';
 
-export const version = '2025.1126.1';
+export const version = '2025.1126.2';
 
 export { log };
 
