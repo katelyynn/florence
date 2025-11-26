@@ -66,9 +66,12 @@ export default function florence({
             pre_observer.disconnect();
         } else if (
             document.body &&
-            document.body.querySelector(':scope > .container')
+            (
+                document.body.querySelector(':scope > .container') ||
+                document.body.classList.contains('namespace--user_now')
+            )
         ) {
-            // error 503
+            // error 503 or other page
             document.body.classList.add('florence-loaded');
         }
     });
