@@ -49,7 +49,7 @@ function log(text, system, type = "info", append = {}) {
 }
 
 // src/index.js
-var version = "2025.1126.2";
+var version = "2026.0104.2";
 var last_page_type = {
   state: void 0
 };
@@ -66,6 +66,7 @@ function florence({
   on_error,
   on_dedicated_page
 }) {
+  let abort_loading = false;
   log("starting florence", "load", "info", {
     page,
     on_head_load,
@@ -78,6 +79,13 @@ function florence({
   });
   let head_observer = new MutationObserver(() => {
     if (document.head) {
+      const split = window.location.pathname.split("/");
+      const length = split.length - 1;
+      if (split[length] == "playback" && split[length - 3] == "listening-report") {
+        head_observer.disconnect();
+        abort_loading = true;
+        return;
+      }
       document.documentElement.classList.add("florence-supports-loading");
       if (on_head_load) on_head_load();
       head_observer.disconnect();
@@ -87,6 +95,10 @@ function florence({
     childList: true
   });
   let pre_observer = new MutationObserver((mutations) => {
+    if (abort_loading) {
+      pre_observer.disconnect();
+      return;
+    }
     log("pre", "load", "info", { mutations });
     if (document.body) {
       log(`${JSON.stringify(document.body.classList)}`, "load");
