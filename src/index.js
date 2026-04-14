@@ -6,7 +6,7 @@
 
 import { log } from './log';
 
-export const version = '2026.0414';
+export const version = '2026.0414.1';
 
 let last_page_type = {
     state: undefined
@@ -27,7 +27,7 @@ export default function florence({
 }) {
     let abort_loading = false;
 
-    log('starting florence', 'load', 'info', {
+    log(`starting florence ${version}`, 'load', 'info', {
         page,
         on_head_load,
         on_body_load,
