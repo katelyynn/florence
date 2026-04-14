@@ -49,7 +49,7 @@ function log(text, system, type = "info", append = {}) {
 }
 
 // src/index.js
-var version = "2026.0104.2";
+var version = "2026.0414.2";
 var last_page_type = {
   state: void 0
 };
@@ -67,7 +67,7 @@ function florence({
   on_dedicated_page
 }) {
   let abort_loading = false;
-  log("starting florence", "load", "info", {
+  log(`starting florence ${version}`, "load", "info", {
     page,
     on_head_load,
     on_body_load,
@@ -128,7 +128,7 @@ function florence({
     try {
       if (on_body_load) on_body_load();
       flow();
-      const observer = new MutationObserver((mutations) => {
+      const observer2 = new MutationObserver((mutations) => {
         if (!mutations[0]) return;
         const nodes = [
           ...mutations[0].addedNodes,
@@ -141,9 +141,9 @@ function florence({
           return;
         }
         log("loop", "mutation", "log", { mutations });
-        flow();
+        flow(observer2);
       });
-      observer.observe(document.body, {
+      observer2.observe(document.body, {
         childList: true,
         subtree: true
       });
@@ -154,16 +154,28 @@ function florence({
       );
     } catch (e) {
       log(`florence ran into an error`, "load", "error", { e });
+      if (observer) observer.disconnect();
       if (on_error) on_error(e);
     }
   }
-  function flow() {
-    let performance_start = performance.now();
-    assign_page();
-    if (page.state.error) return;
-    if (on_mutation) on_mutation();
-    let performance_end = performance.now();
-    log(`finished in ${(performance_end - performance_start) / 1e3} seconds`, "loop");
+  let running = false;
+  function flow(observer2) {
+    if (running) return;
+    running = true;
+    try {
+      let performance_start = performance.now();
+      assign_page();
+      if (page.state.error) return;
+      if (on_mutation) on_mutation();
+      let performance_end = performance.now();
+      log(`finished in ${(performance_end - performance_start) / 1e3} seconds`, "loop");
+    } catch (e) {
+      log("flow error", "loop", "error", { e });
+      if (observer2) observer2.disconnect();
+      if (on_error) on_error(e);
+    } finally {
+      running = false;
+    }
   }
   function assign_page() {
     document.documentElement.classList.add("florence-supports-loading");
@@ -210,6 +222,5 @@ function florence({
 }
 export {
   florence as default,
-  log,
   version
 };

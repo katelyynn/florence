@@ -6,7 +6,7 @@
 
 import { log } from './log';
 
-export const version = '2026.0414.1';
+export const version = '2026.0414.2';
 
 let last_page_type = {
     state: undefined
