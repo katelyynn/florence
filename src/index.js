@@ -6,9 +6,7 @@
 
 import { log } from './log';
 
-export const version = '2026.0104.2';
-
-export { log };
+export const version = '2026.0414';
 
 let last_page_type = {
     state: undefined
@@ -139,7 +137,7 @@ export default function florence({
 
                 log('loop', 'mutation', 'log', { mutations: mutations });
 
-                flow();
+                flow(observer);
             });
 
             observer.observe(document.body, {
@@ -154,20 +152,34 @@ export default function florence({
             );
         } catch (e) {
             log(`florence ran into an error`, 'load', 'error', { e });
+            if (observer) observer.disconnect();
             if (on_error) on_error(e);
         }
     }
 
-    function flow() {
-        let performance_start = performance.now();
-        assign_page();
+    let running = false;
 
-        if (page.state.error) return;
+    function flow(observer) {
+        if (running) return;
+        running = true;
 
-        if (on_mutation) on_mutation();
+        try {
+            let performance_start = performance.now();
+            assign_page();
 
-        let performance_end = performance.now();
-        log(`finished in ${(performance_end - performance_start) / 1000} seconds`, 'loop');
+            if (page.state.error) return;
+
+            if (on_mutation) on_mutation();
+
+            let performance_end = performance.now();
+            log(`finished in ${(performance_end - performance_start) / 1000} seconds`, 'loop');
+        } catch (e) {
+            log('flow error', 'loop', 'error', { e });
+            if (observer) observer.disconnect();
+            if (on_error) on_error(e);
+        } finally {
+            running = false;
+        }
     }
 
     function assign_page() {
