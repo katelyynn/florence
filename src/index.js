@@ -6,7 +6,7 @@
 
 import { log } from './log';
 
-export const version = '2026.0414.2';
+export const version = '2026.0420';
 
 let last_page_type = {
     state: undefined
@@ -202,6 +202,11 @@ export default function florence({
     }
 
     function assign_page_type() {
+        page.previous = {
+            type: page.type,
+            name: page.name
+        }
+
         let page_classes = document.body.classList;
         page_classes.forEach((page_class, index) => {
             if (page_class.startsWith('namespace')) {
