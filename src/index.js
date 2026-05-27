@@ -6,7 +6,7 @@
 
 import { log } from './log';
 
-export const version = '2026.0420';
+export const version = '2026.0527';
 
 let last_page_type = {
     state: undefined
@@ -45,7 +45,8 @@ export default function florence({
 
             // we check for the existence of last.fm playback
             // and if so abort immediately to avoid issues
-            if (split[length] == 'playback' && split[length - 3] == 'listening-report') {
+            // the same is done with /pro pages to allow purchases
+            if ((split[length] == 'playback' && split[length - 3] == 'listening-report') || (split[0] == 'pro' || (split[1] == 'pro'))) {
                 head_observer.disconnect();
                 abort_loading = true;
                 return;

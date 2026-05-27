@@ -1,6 +1,6 @@
 {
     "name": "@tealmiku/florence",
-    "version": "2026.420.0",
+    "version": "2026.527.0",
     "main": "dist/florence.js",
     "type": "module",
     "scripts": {
