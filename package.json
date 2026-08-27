@@ -1,12 +1,12 @@
 {
-    "name": "@tealmiku/florence",
-    "version": "2026.527.0",
-    "main": "dist/florence.js",
-    "type": "module",
-    "scripts": {
-        "build": "node index.js"
-    },
-    "devDependencies": {
-        "esbuild": "^0.25.11"
-    }
+	"name": "@tealmiku/florence",
+	"version": "2026.827.0",
+	"main": "dist/florence.js",
+	"type": "module",
+	"scripts": {
+		"build": "node ./index.js"
+	},
+	"devDependencies": {
+		"esbuild": "^0.25.11"
+	}
 }

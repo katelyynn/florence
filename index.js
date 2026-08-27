@@ -7,12 +7,12 @@
 import esbuild from 'esbuild';
 
 esbuild
-    .build({
-        entryPoints: ['src/index.js'],
-        bundle: true,
-        outfile: 'dist/florence.js',
-        minify: true,
-        platform: 'browser',
-        format: 'esm'
-    })
-    .catch(() => process.exit(1));
+	.build({
+		entryPoints: ['src/index.ts'],
+		bundle: true,
+		outfile: 'dist/florence.js',
+		minify: true,
+		platform: 'browser',
+		format: 'esm'
+	})
+	.catch(() => process.exit(1));
