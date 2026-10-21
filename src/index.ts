@@ -6,7 +6,7 @@
 
 import { log } from './log.js';
 
-export const version = '2026.0827';
+export const version = '2026.1021';
 
 let last_page_type: { state?: string } = {};
 let last_page_subpage: { state?: string } = {};
@@ -149,6 +149,8 @@ export default function florence({
 				}
 
 				if (!mutations[0]) return;
+
+				// skip tooltip events
 				const nodes = [
 					...mutations[0].addedNodes,
 					...mutations[0].removedNodes
@@ -158,8 +160,7 @@ export default function florence({
 					nodes.every(
 						(n) =>
 							n.nodeType == 1 &&
-							(n.hasAttribute('data-tippy-root') ||
-								(n.id || '').startsWith('tippy-'))
+							(n.className && n.className == 'tippy-box')
 					)
 				) {
 					log('ignored', 'mutation', 'log', { mutations: mutations });
