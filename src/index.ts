@@ -95,14 +95,13 @@ export default function florence({
 			return;
 		}
 
-		log('pre', 'load', 'info', { mutations });
-		if (document.body) {
-			log(`${JSON.stringify(document.body.classList)}`, 'load');
-			document.body.classList.add('florence');
-		}
+		log('awaiting a body element', 'load', 'info', { mutations });
+		if (!document.body) return;
+
+		log(`located: ${JSON.stringify(document.body.classList)}`, 'load');
+		document.body.classList.add('florence');
 
 		if (
-			document.body &&
 			document.body.querySelector('.adaptive-skin-container') &&
 			document.body.querySelector('.footer')
 		) {
@@ -110,19 +109,16 @@ export default function florence({
 
 			pre_observer.disconnect();
 		} else if (
-			document.body &&
-			(
-				document.body.querySelector(':scope > .container') ||
-				document.body.classList.contains('namespace--user_now')
-			)
+			document.body.querySelector(':scope > .container') ||
+			document.body.classList.contains('namespace--user_now')
 		) {
 			// error 503 or other page
 			document.body.classList.add('florence-loaded');
 
 			if (document.body.querySelector(':scope > .container')) {
-				if (on_dedicated_page) on_dedicated_page('503');
+				on_dedicated_page?.('503');
 			} else if (document.body.classList.contains('namespace--user_now')) {
-				if (on_dedicated_page) on_dedicated_page('now');
+				on_dedicated_page?.('now');
 			}
 		}
 	});
