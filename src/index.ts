@@ -65,24 +65,24 @@ export default function florence({
 	});
 
 	let head_observer = new MutationObserver(() => {
-		if (document.head) {
-			const split = window.location.pathname.split('/');
-			const length = split.length - 1;
+		if (!document.head) return;
 
-			// we check for the existence of last.fm playback
-			// and if so abort immediately to avoid issues
-			// the same is done with /pro pages to allow purchases
-			if ((split[length] == 'playback' && split[length - 3] == 'listening-report') || (split[0] == 'pro' || (split[1] == 'pro'))) {
-				head_observer.disconnect();
-				abort_loading = true;
-				return;
-			}
+		const split = window.location.pathname.split('/');
+		const length = split.length - 1;
 
-			document.documentElement.classList.add('florence-supports-loading');
-			if (on_head_load) on_head_load();
-
+		// we check for the existence of last.fm playback
+		// and if so abort immediately to avoid issues
+		// the same is done with /pro pages to allow purchases
+		if ((split[length] == 'playback' && split[length - 3] == 'listening-report') || (split[0] == 'pro' || (split[1] == 'pro'))) {
 			head_observer.disconnect();
+			abort_loading = true;
+			return;
 		}
+
+		document.documentElement.classList.add('florence-supports-loading');
+		if (on_head_load) on_head_load();
+
+		head_observer.disconnect();
 	});
 
 	head_observer.observe(document.documentElement, {
@@ -147,21 +147,13 @@ export default function florence({
 				if (!mutations[0]) return;
 
 				// skip tooltip events
-				const nodes = [
-					...mutations[0].addedNodes,
-					...mutations[0].removedNodes
-				];
-				if (
-					nodes.length &&
-					nodes.every(
-						(n) =>
-							n.nodeType == 1 &&
-							(n.className && n.className == 'tippy-box')
-					)
-				) {
-					log('ignored', 'mutation', 'log', { mutations: mutations });
-					return;
-				}
+				const is_tooltip = mutations.every(mutation => {
+					const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
+
+					return nodes.length > 0 && nodes.every(node => node.nodeType == 1 && (node as HTMLElement).className == 'tippy-box');
+				});
+
+				if (is_tooltip) return;
 
 				log('loop', 'mutation', 'log', { mutations: mutations });
 
@@ -192,6 +184,7 @@ export default function florence({
 		if (running || scheduled) return;
 
 		scheduled = true;
+		log('scheduled response to loop', 'load');
 
 		queueMicrotask(() => {
 			scheduled = false;
