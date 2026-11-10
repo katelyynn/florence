@@ -13,6 +13,7 @@ let last_page_subpage: { state?: string } = {};
 
 interface page {
 	type: string;
+	subpage: string;
 	initial?: string;
 	name: string;
 	sister?: string;
@@ -218,7 +219,7 @@ export default function florence({
 	function assign_page() {
 		document.documentElement.classList.add('florence-supports-loading');
 		if (!page.structure.wrapper)
-			page.structure.wrapper = document.body.querySelector('.main-content');
+			page.structure.wrapper = document.body.querySelector('.main-content') as HTMLElement;
 
 		const main_content = page.structure.wrapper!.querySelector(':scope > :last-child:not([data-florence])') as HTMLElement;
 		if (main_content) {
@@ -240,33 +241,27 @@ export default function florence({
 			name: page.name
 		}
 
-		let page_classes = document.body.classList;
-		page_classes.forEach((page_class, index) => {
-			if (page_class.startsWith('namespace')) {
-				page.initial = page_class.replace('namespace--', '');
-				let page_split = page.initial.split('_');
+		const namespace = [...document.body.classList].find(c => c.startsWith('namespace'));
+		if (!namespace) return;
 
-				page.type = page_split[0];
-				if (page.type == 'music') {
-					page.type = page_split[1];
-				}
+		page.initial = namespace.replace('namespace--', '');
+		let page_split = page.initial.split('_');
 
-				if (page.type != last_page_type.state) {
-					last_page_type.state = page.type;
-					log(page.type, 'page');
-				}
+		page.type = page_split[0];
+		if (page.type == 'music') {
+			page.type = page_split[1];
+		}
 
-				assign_page_subpage();
+		if (page.type != last_page_type.state) {
+			last_page_type.state = page.type;
+			log(page.type, 'page');
+		}
 
-				return;
-			}
-
-			if (index > 4) return;
-		});
+		assign_page_subpage();
 	}
 
 	function assign_page_subpage() {
-		page.subpage = page.initial
+		page.subpage = page.initial!
 			.replace(page.type, '')
 			.replace('_', '')
 			.replace('music_', '')
