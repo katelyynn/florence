@@ -6,7 +6,7 @@
 
 import { log } from './log.js';
 
-export const version = '2026.1021';
+export const version = '2026.1110';
 
 let last_page_type: { state?: string } = {};
 let last_page_subpage: { state?: string } = {};
