@@ -169,7 +169,7 @@ export default function florence({
 
 				log('loop', 'mutation', 'log', { mutations: mutations });
 
-				flow(observer);
+				schedule(observer);
 			});
 
 			observer.observe(document.body, {
@@ -190,6 +190,18 @@ export default function florence({
 	}
 
 	let running = false;
+	let scheduled = false;
+
+	function schedule(observer: MutationObserver) {
+		if (running || scheduled) return;
+
+		scheduled = true;
+
+		queueMicrotask(() => {
+			scheduled = false;
+			flow(observer);
+		});
+	}
 
 	function flow(observer: MutationObserver) {
 		if (running) return;
